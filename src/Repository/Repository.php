@@ -20,11 +20,39 @@ class Repository
 
     protected $_tableName = null;
 
+    protected $_uniqueIdx = null;
+
     protected function getTableName()
     {
         if(is_null($this->_tableName))
             $this->_tableName = call_user_func($this->_entityClass.'::getTableName');
         return $this->_tableName;
+    }
+
+    protected function getUniquesIndex()
+    {
+        if(is_null($this->_uniqueIdx)){
+            $this->_uniqueIdx =  call_user_func($this->_entityClass.'::getUniquesIndex');
+        }
+        return $this->_uniqueIdx;
+    }
+
+    protected function checkBeforeSave(AbstractEntity $entity)
+    {
+        // check uniqueIndex
+        foreach($this->getUniquesIndex() as $index){
+            $sql = "SELECT * FROM ". $this->getTableName()." WHERE ";
+            $data = array();
+            foreach($index as $idxPart){
+                $sql .= " $idxPart = ? AND ";
+                $data[] = $entity->getData()[$idxPart];
+            }
+            $sql = substr($sql,0,-4);
+            $row = $this->_db->fetchAssoc($sql, $data);
+            if($row)
+                return false;
+        }
+        return true;
     }
 
     public function __construct(Connection $db, string $entityClass)
@@ -65,6 +93,8 @@ class Repository
     public function save(AbstractEntity $entity)
     {
         $data = $entity->getData();
+
+        $this->checkBeforeSave($entity);
 
         if($entity->getId()){
             $this->_db->update($this->getTableName(),$data,array('id'  =>  $entity->getId()));

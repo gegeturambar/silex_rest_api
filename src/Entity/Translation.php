@@ -5,7 +5,7 @@ namespace Entity;
 class Translation extends AbstractEntity
 {
 
-    static protected $_tablename = "translation";
+    static protected $_tablename = "traduction";
 
     /**
      * @var integer
@@ -20,7 +20,23 @@ class Translation extends AbstractEntity
     /**
      * @var integer
      */
-    private $languageId;
+    private $langueId;
+
+    /**
+     * @return int
+     */
+    public function getLangueId()
+    {
+        return $this->langueId;
+    }
+
+    /**
+     * @param int $langueId
+     */
+    public function setLangueId($langueId)
+    {
+        $this->langueId = $langueId;
+    }
 
     /**
      * @return int
@@ -52,22 +68,6 @@ class Translation extends AbstractEntity
     public function setTag($tag)
     {
         $this->tag = $tag;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLanguageId()
-    {
-        return $this->languageId;
-    }
-
-    /**
-     * @param int $languageId
-     */
-    public function setLanguageId($languageId)
-    {
-        $this->languageId = $languageId;
     }
 
     /**

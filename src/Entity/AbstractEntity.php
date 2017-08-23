@@ -6,6 +6,13 @@ abstract class AbstractEntity{
 
     protected static $_tablename;
 
+    protected static $_uniquesIndex = array();
+
+    public static function getUniquesIndex()
+    {
+        return static::$_uniquesIndex;
+    }
+
     public function __construct($row = null)
     {
         if(!is_null($row)){

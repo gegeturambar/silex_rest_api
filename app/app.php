@@ -35,6 +35,13 @@ $app['repository.user'] = function($app){
     return new \Repository\Repository($app['db'],\Entity\User::class);
 };
 
+$app['repository.translation'] = function($app){
+    return new \Repository\Repository($app['db'],\Entity\Translation::class);
+};
+
+$app['repository.version'] = function($app){
+    return new \Repository\Repository($app['db'],\Entity\Version::class);
+};
 
 
 $app->before(function(Request $request){
