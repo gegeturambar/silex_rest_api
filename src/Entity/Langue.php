@@ -2,7 +2,7 @@
 
 namespace Entity;
 
-class Language extends AbstractEntity
+class Langue extends AbstractEntity
 {
 
     /**
@@ -14,6 +14,27 @@ class Language extends AbstractEntity
      * @var string
      */
     private $name;
+
+    /**
+     * @var string
+     */
+    private $code;
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $code
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
 
     /**
      * @return int
@@ -44,7 +65,7 @@ class Language extends AbstractEntity
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = mb_strtolower($name);
     }
 
     static protected $_tablename = "langue";

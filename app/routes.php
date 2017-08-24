@@ -28,17 +28,17 @@ $app->delete('api/user/delete/{id}', '\Controller\UserController::deleteAction')
 $app->put('/api/user/update/{id}', '\Controller\UserController::updateAction')->bind('api_user_update');
 
 
-/** languages */
+/** langues */
 
-$app->get('/api/languages','\Controller\LanguageController::indexAction')->bind('api_languages');
+$app->get('/api/langues','\Controller\LangueController::indexAction')->bind('api_langues');
 
-$app->get('/api/language/{id}','\Controller\LanguageController::findAction')->bind('api_language');
+$app->get('/api/langue/{id}','\Controller\LangueController::findAction')->bind('api_langue');
 
-$app->post('/api/language/create','\Controller\LanguageController::createAction')->bind('api_language_add');
+$app->post('/api/langue/create','\Controller\LangueController::createAction')->bind('api_langue_add');
 
-$app->delete('/api/language/delete/{id}','\Controller\LanguageController::deleteAction')->bind('api_language_delete');
+$app->delete('/api/langue/delete/{id}','\Controller\LangueController::deleteAction')->bind('api_langue_delete');
 
-$app->put('/api/language/update/{id}','\Controller\LanguageController::updateAction')->bind('api_language_update');
+$app->put('/api/langue/update/{id}','\Controller\LangueController::updateAction')->bind('api_langue_update');
 
 
 /** versions */
@@ -54,20 +54,22 @@ $app->delete('/api/version/delete/{id}','\Controller\VersionController::deleteAc
 $app->put('/api/version/update/{id}','\Controller\VersionController::updateAction')->bind('api_version_update');
 
 
-/** translations */
+/** traductions */
 
-$app->get('/api/translations','\Controller\TranslationController::indexAction')->bind('api_translations');
+$app->get('/api/traductions','\Controller\TraductionController::indexAction')->bind('api_traductions');
 
-$app->get('/api/translation/{id}','\Controller\TranslationController::findAction')->bind('api_translation');
+$app->get('/api/traductions/import','\Controller\TraductionController::importAction')->bind('api_traductions_import');
 
-$app->get('/api/translations/tag/{tag}/{lang}','\Controller\TranslationController::findByTagAction')->bind('api_translations_tag');
+$app->get('/api/traduction/{id}','\Controller\TraductionController::findAction')->bind('api_traduction');
 
-$app->get('/api/translations/lang/{lang}/{tag}','\Controller\TranslationController::findByLangAction')->bind('api_translations_lang');
+$app->get('/api/traductions/tag/{tag}/{lang}','\Controller\TraductionController::findByTagAction')->bind('api_traductions_tag');
 
-$app->post('/api/translation/create','\Controller\TranslationController::createAction')->bind('api_translation_add');
+$app->get('/api/traductions/lang/{lang}/{tag}','\Controller\TraductionController::findByLangAction')->bind('api_traductions_lang');
 
-$app->delete('/api/translation/delete/{id}','\Controller\TranslationController::deleteAction')->bind('api_translation_delete');
+$app->post('/api/traduction/create','\Controller\TraductionController::createAction')->bind('api_traduction_add');
 
-$app->put('/api/translation/update/{id}','\Controller\TranslationController::updateAction')->bind('api_translation_update');
+$app->delete('/api/traduction/delete/{id}','\Controller\TraductionController::deleteAction')->bind('api_traduction_delete');
+
+$app->put('/api/traduction/update/{id}','\Controller\TraductionController::updateAction')->bind('api_traduction_update');
 
 

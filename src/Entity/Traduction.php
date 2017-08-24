@@ -2,7 +2,7 @@
 
 namespace Entity;
 
-class Translation extends AbstractEntity
+class Traduction extends AbstractEntity
 {
 
     static protected $_tablename = "traduction";

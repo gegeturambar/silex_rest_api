@@ -90,6 +90,30 @@ class Repository
         }
     }
 
+    public function findBy($params, $and = true)
+    {
+        $data = array();
+        $where = "";
+        foreach($params as $name => $value){
+            $where .= " $name = ? ";
+            $where .= $and ? " AND " : " OR ";
+            $data[] = $value;
+        }
+        $lgt = $and ? -4 : -3;
+        $where = substr($where,0,$lgt);
+        $sql = "SELECT * FROM ".$this->getTableName()." WHERE ".$where;
+
+        $result = $this->_db->fetchAll($sql, $data);
+        $entities = array();
+        if($result) {
+            foreach ($result as $row) {
+                $id = $row['id'];
+                $entities[$id] = new $this->_entityClass($row);
+            }
+        }
+        return $entities;
+    }
+
     public function save(AbstractEntity $entity)
     {
         $data = $entity->getData();
@@ -107,6 +131,11 @@ class Repository
 
     public function delete($id){
         $this->_db->delete($this->getTableName(),array('id'  =>  $id ) );
+    }
+
+    public function truncate(){
+        $sql = "TRUNCATE TABLE ".$this->getTableName().";";
+        $this->_db->executeQuery($sql);
     }
 
 }

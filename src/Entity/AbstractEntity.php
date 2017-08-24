@@ -8,6 +8,8 @@ abstract class AbstractEntity{
 
     protected static $_uniquesIndex = array();
 
+    protected static $_properties = null;
+
     public static function getUniquesIndex()
     {
         return static::$_uniquesIndex;
@@ -34,17 +36,30 @@ abstract class AbstractEntity{
         }
     }
 
+    public static function getProperties()
+    {
+        if(is_null(static::$_properties)) {
+            $r = new \ReflectionClass(get_called_class());
+            $data = array();
+            foreach ($r->getProperties() as $p) {
+                if ($p->isStatic())
+                    continue;
+                $fctionName = 'get' . ucfirst($p->getName());
+                if ($r->hasMethod($fctionName)) {
+                    static::$_properties[] = $p->getName();
+                }
+            }
+        }
+        return static::$_properties;
+    }
+
+
     public function getData()
     {
-        $r = new \ReflectionClass($this);
         $data = array();
-        foreach($r->getProperties() as $p){
-            if($p->isStatic())
-                continue;
-            $fctionName = 'get'.ucfirst($p->getName());
-            if(method_exists($this,$fctionName)){
-                $data[$p->getName()] = $this->$fctionName();
-            }
+        foreach(static::getProperties() as $p){
+            $fctionName = 'get'.ucfirst($p);
+            $data[$p] = $this->$fctionName();
         }
         return($data);
     }

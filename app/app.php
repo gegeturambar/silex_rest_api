@@ -27,16 +27,16 @@ $app['dao.user'] = function ($app) {
 };
 */
 
-$app['repository.language'] = function($app){
-    return new \Repository\Repository($app['db'],\Entity\Language::class);
+$app['repository.langue'] = function($app){
+    return new \Repository\Repository($app['db'],\Entity\Langue::class);
 };
 
 $app['repository.user'] = function($app){
     return new \Repository\Repository($app['db'],\Entity\User::class);
 };
 
-$app['repository.translation'] = function($app){
-    return new \Repository\Repository($app['db'],\Entity\Translation::class);
+$app['repository.traduction'] = function($app){
+    return new \Repository\Repository($app['db'],\Entity\Traduction::class);
 };
 
 $app['repository.version'] = function($app){
@@ -51,12 +51,11 @@ $app->before(function(Request $request){
     }
 });
 
-$app->after(function (Request $request, Response $response ){
-
+$app->after(function (Request $request, Response $response, $app ){
+    $response->headers->set('version', $app['settings']['version']);
 });
 
 $app->finish(function (Request $request, Response $response ){
-
 });
 
 
