@@ -4,9 +4,6 @@ namespace Entity;
 
 class User extends AbstractEntity
 {
-
-    static protected $_tablename = "user";
-
     /**
      * @var integer
      */
@@ -69,4 +66,8 @@ class User extends AbstractEntity
     {
         $this->lastname = $lastname;
     }
+
+    protected static $_tablename = "user";
+
+    protected static $_properties = null;
 }

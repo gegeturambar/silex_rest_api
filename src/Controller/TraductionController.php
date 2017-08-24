@@ -11,6 +11,7 @@ namespace Controller;
 
 use Entity\Langue;
 use Entity\Traduction;
+use Entity\Version;
 use Repository\Repository;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -137,6 +138,23 @@ class TraductionController
                 }
             }
         }
+
+        // maj version
+        /** @var Repository $versRep */
+        $versRep = $app['repository.version'];
+        $versions = $versRep->findAll(array("dateCreated"),"DESC");
+        $lastnum = array_pop($versions)->getNumero();
+        $nums = str_replace(".","",$lastnum);
+        $nums++;
+        $nums = str_split($nums);
+        $lastnum = implode(".",$nums);
+        $lastVersion = new Version();
+        $lastVersion->setNumero($lastnum);
+        $d = new \DateTime();
+        $dateCreated = isset($dateCreated) ? $dateCreated : $d->format( Version::getFormat() );
+        $lastVersion->setDateCreated($dateCreated);
+        $versRep->save($lastVersion);
+
 
         return $app->json($responseData);
     }

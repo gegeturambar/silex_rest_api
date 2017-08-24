@@ -68,9 +68,11 @@ class Langue extends AbstractEntity
         $this->name = mb_strtolower($name);
     }
 
-    static protected $_tablename = "langue";
+    protected static $_tablename = "langue";
 
     protected static $_uniquesIndex = array(
         ["name"]
     );
+
+    protected static $_properties = null;
 }

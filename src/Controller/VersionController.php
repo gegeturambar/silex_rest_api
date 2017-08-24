@@ -46,8 +46,6 @@ class VersionController
         return $app->json($responseData);
     }
 
-    protected static $format = 'Y-m-d H:i:s';
-
     public function createAction(Application $app,Request $request)
     {
         $requiredParams = array('numero');
@@ -61,7 +59,7 @@ class VersionController
         $version->setNumero($request->request->get('numero'));
         $dateCreated = $request->request->get('dateCreated');
         $d = new \DateTime();
-        $dateCreated = isset($dateCreated) ? $dateCreated : $d->format(static::$format);
+        $dateCreated = isset($dateCreated) ? $dateCreated : $d->format(Version::getFormat());
         $version->setDateCreated($dateCreated);
         $app['repository.version']->save($version);
 
@@ -86,7 +84,7 @@ class VersionController
         $dateCreated = $request->request->get('dateCreated');
         $d = new \DateTime();
 
-        $dateCreated = isset($dateCreated) ? $dateCreated : $d->format(static::$format);
+        $dateCreated = isset($dateCreated) ? $dateCreated : $d->format(Version::getFormat());
         $version->setDateCreated($dateCreated);
 
         $app['repository.version']->save($version);

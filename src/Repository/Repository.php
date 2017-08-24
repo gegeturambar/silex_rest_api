@@ -65,9 +65,17 @@ class Repository
         $this->_entityClass = $entityClass;
     }
 
-    public function findAll()
+    public function findAll($orderFields = array(),$order = "ASC")
     {
         $sql = "SELECT * FROM ". $this->getTableName();
+        if(count($orderFields)) {
+            $sql .= " ORDER BY ( ";
+            foreach ($orderFields as $field) {
+                $sql .= " $field , ";
+            }
+            $sql = substr($sql,0,-2);
+            $sql .= " ) $order ;";
+        }
         $result = $this->_db->fetchAll($sql);
 
         $entities = array();

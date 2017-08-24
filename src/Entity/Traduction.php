@@ -5,8 +5,6 @@ namespace Entity;
 class Traduction extends AbstractEntity
 {
 
-    static protected $_tablename = "traduction";
-
     /**
      * @var integer
      */
@@ -90,5 +88,9 @@ class Traduction extends AbstractEntity
      * @var value
      */
     private $value;
+
+    protected static $_properties = null;
+
+    protected static $_tablename = "traduction";
 
 }

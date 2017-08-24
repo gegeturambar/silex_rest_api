@@ -4,7 +4,6 @@ namespace Entity;
 
 class Version extends AbstractEntity
 {
-
     /**
      * @var integer
      */
@@ -68,10 +67,18 @@ class Version extends AbstractEntity
         $this->id = $id;
     }
 
+    protected static $_format = 'Y-m-d H:i:s';
 
-    static protected $_tablename = "version";
+    public static function getFormat()
+    {
+        return self::$_format;
+    }
+
+    protected static $_tablename = "version";
 
     protected static $_uniquesIndex = array(
         ["numero"]
     );
+
+    protected static $_properties = null;
 }
