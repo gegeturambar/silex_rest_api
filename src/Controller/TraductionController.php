@@ -47,8 +47,87 @@ class TraductionController
 
         $responseData = array(
             'id'    =>  $traduction->getId(),
-            'firstname' =>  $traduction->getName()
+            'tag'   =>  $traduction->getTag(),
+            'lang'  =>  $app['repository.langue']->find($traduction->getLangueId())->getCode()  ,
+            'value' =>  $traduction->getValue()
         );
+        return $app->json($responseData);
+    }
+
+    public function findByLangAction(Application $app, Request $request,$lang , $tag = null)
+    {
+        if(!is_integer($lang)){
+            $langId = $app['repository.langue']->findBy(array("code" => $lang, "name"   =>  $lang ), false );
+            if(!count($langId)){
+                throw new \Exception("no langue found with name or code $lang");
+            }
+            $langId = array_pop($langId);
+            $langId = $langId->getId();
+        }else{
+            $langId = $lang;
+        }
+
+        $filters = array('langueId'=>$langId );
+        if(!is_null($tag)){
+            $filters["tag"] = $tag;
+        }
+
+        $traductions = $app['repository.traduction']->findBy($filters );
+        if(!isset($traductions)){
+            $app->abort(404, 'Traductions do not exist');
+        }
+
+        $responseData = array();
+        /** @var Traduction $traduction */
+        foreach($traductions as $traduction){
+            $responseData[] = array(
+                'id'    =>  $traduction->getId(),
+                'tag'   =>  $traduction->getTag(),
+                'lang'  =>  $app['repository.langue']->find($traduction->getLangueId())->getCode()  ,
+                'value' =>  $traduction->getValue()
+
+            );
+        }
+
+        return $app->json($responseData);
+    }
+
+    public function findByTagAction(Application $app, Request $request,$tag , $lang = null)
+    {
+
+
+        $filters = array('tag'=>$tag );
+        if(!is_null($lang)){
+            if(!is_integer($lang)){
+                $langId = $app['repository.langue']->findBy(array("code" => $lang, "name"   =>  $lang ), false );
+                if(count($langId)){
+                    $langId = array_pop($langId);
+                    $langId = $langId->getId();
+                    $filters["langueId"] = $langId;
+                }
+            }else{
+                $langId = $lang;
+                $filters["langId"] = $langId;
+            }
+        }
+
+        $traductions = $app['repository.traduction']->findBy($filters );
+        if(!isset($traductions)){
+            $app->abort(404, 'Traductions do not exist');
+        }
+
+        $responseData = array();
+        /** @var Traduction $traduction */
+        foreach($traductions as $traduction){
+            $responseData[] = array(
+                'id'    =>  $traduction->getId(),
+                'tag'   =>  $traduction->getTag(),
+                'lang'  =>  $app['repository.langue']->find($traduction->getLangueId())->getCode()  ,
+                'value' =>  $traduction->getValue()
+
+            );
+        }
+
         return $app->json($responseData);
     }
 

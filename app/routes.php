@@ -62,9 +62,13 @@ $app->get('/api/traductions/import','\Controller\TraductionController::importAct
 
 $app->get('/api/traduction/{id}','\Controller\TraductionController::findAction')->bind('api_traduction');
 
-$app->get('/api/traductions/tag/{tag}/{lang}','\Controller\TraductionController::findByTagAction')->bind('api_traductions_tag');
 
-$app->get('/api/traductions/lang/{lang}/{tag}','\Controller\TraductionController::findByLangAction')->bind('api_traductions_lang');
+$app->get('/api/traductions/lang/{lang}','\Controller\TraductionController::findByLangAction')->bind('api_traductions_lang');
+$app->get('/api/traductions/lang/{lang}/{tag}','\Controller\TraductionController::findByLangAction')->bind('api_traductions_lang_tag');
+
+$app->get('/api/traductions/tag/{tag}','\Controller\TraductionController::findByTagAction')->bind('api_traductions_tag');
+$app->get('/api/traductions/tag/{tag}/{lang}','\Controller\TraductionController::findByTagAction')->bind('api_traductions_tag_lang');
+
 
 $app->post('/api/traduction/create','\Controller\TraductionController::createAction')->bind('api_traduction_add');
 
