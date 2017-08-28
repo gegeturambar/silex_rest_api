@@ -1,5 +1,7 @@
 <?php
 
+$app->get('/api/export','\Controller\ExportController::indexAction')->bind('api_export');
+
 $app->get('/api/users','\Controller\UserController::indexAction')->bind('api_users');
 
 /*

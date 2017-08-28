@@ -65,7 +65,7 @@ class Repository
         $this->_entityClass = $entityClass;
     }
 
-    public function findAll($orderFields = array(),$order = "ASC")
+    public function findAll($orderFields = array(),$order = "ASC",$limit = null)
     {
         $sql = "SELECT * FROM ". $this->getTableName();
         if(count($orderFields)) {
@@ -74,8 +74,13 @@ class Repository
                 $sql .= " $field , ";
             }
             $sql = substr($sql,0,-2);
-            $sql .= " ) $order ;";
+            $sql .= " ) $order ";
         }
+        if(!is_null($limit)){
+            $sql .= "LIMIT ".(integer)$limit;
+        }
+        $sql .= ";";
+
         $result = $this->_db->fetchAll($sql);
 
         $entities = array();
