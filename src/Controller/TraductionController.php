@@ -204,10 +204,10 @@ class TraductionController
                                 $tradRep->save($traduction);
 
                                 $responseData[] = array(
-                                    'id'    =>  $traduction->getId(),
-                                    'tag'   =>  $traduction->getTag(),
-                                    'lang'  =>  $app['repository.langue']->find($traduction->getLangueId() )->getCode()  ,
-                                    'value' =>  $traduction->getValue()
+                                    'id' => $traduction->getId(),
+                                    'tag' => $traduction->getTag(),
+                                    'lang' => $app['repository.langue']->find($traduction->getLangueId())->getCode(),
+                                    'value' => $traduction->getValue()
                                 );
                             }
                         }
@@ -216,23 +216,24 @@ class TraductionController
                     $rowCount++;
                 }
             }
-        }
 
-        // maj version
-        /** @var Repository $versRep */
-        $versRep = $app['repository.version'];
-        $versions = $versRep->findAll(array("dateCreated"),"DESC");
-        $lastnum = array_pop($versions)->getNumero();
-        $nums = str_replace(".","",$lastnum);
-        $nums++;
-        $nums = str_split($nums);
-        $lastnum = implode(".",$nums);
-        $lastVersion = new Version();
-        $lastVersion->setNumero($lastnum);
-        $d = new \DateTime();
-        $dateCreated = isset($dateCreated) ? $dateCreated : $d->format( Version::getFormat() );
-        $lastVersion->setDateCreated($dateCreated);
-        $versRep->save($lastVersion);
+
+            // maj version
+            /** @var Repository $versRep */
+            $versRep = $app['repository.version'];
+            $versions = $versRep->findAll(array("dateCreated"), "DESC");
+            $lastnum = array_pop($versions)->getNumero();
+            $nums = str_replace(".", "", $lastnum);
+            $nums++;
+            $nums = str_split($nums);
+            $lastnum = implode(".", $nums);
+            $lastVersion = new Version();
+            $lastVersion->setNumero($lastnum);
+            $d = new \DateTime();
+            $dateCreated = isset($dateCreated) ? $dateCreated : $d->format(Version::getFormat());
+            $lastVersion->setDateCreated($dateCreated);
+            $versRep->save($lastVersion);
+        }
 
 
         return $app->json($responseData);
@@ -263,7 +264,17 @@ class TraductionController
         /** @var Traduction $traduction */
         $traduction   =   $app['repository.traduction']->find($id);
 
-        $traduction->setName($request->request->get('name'));
+        $value = $request->request->get('value');
+        if(isset($value))
+            $traduction->setValue($value);
+
+        $tag = $request->request->get('tag');
+        if(isset($tag))
+            $traduction->setTag($tag);
+
+        $tag = $request->request->get('langue');
+        if(isset($langue))
+            $traduction->setLangueId($langue);
 
         $app['repository.traduction']->save($traduction);
 
