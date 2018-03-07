@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Time: 14:35
  */
 
-class TokenAuthenticator extends AbstractGuardAuthenticator
+class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
 {
     private $encoderFactory;
 
@@ -28,13 +28,15 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
         $this->encoderFactory = $encoderFactory;
     }
 
+    /*
     public function createAuthenticatedToken(UserInterface $user, $providerKey){
-	$token = $user->getEmail().':'.$user->getPassword();
-	$data = array(
-	    $providerKey => $token
-	);
+	    $token = $user->getEmail().':'.$user->getPassword();
+        $data = array(
+            $providerKey => $token
+        );
         return new JsonResponse($data, Response::HTTP_ACCEPTED);
     }
+    */
 
     public function getCredentials(Request $request)
     {
@@ -73,11 +75,6 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
         // no credential check is needed in this case
 
         $encoder = $this->encoderFactory->getEncoder($user);
-
-	var_dump($credentials['secret']);
-	var_dump($user->getPassword());
-	var_dump($encoder->isPasswordValid($user->getPassword(),$credentials['secret'],$user->getSalt()));
-	die();
 
         return $encoder->isPasswordValid(
             $user->getPassword(),

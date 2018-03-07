@@ -2,15 +2,8 @@
 
 namespace Security;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Namshi\JOSE\JWS;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Created by PhpStorm.
@@ -19,107 +12,61 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Time: 14:35
  */
 
-class TokenAuthenticator extends AbstractGuardAuthenticator
+class TokenCoder
 {
-    private $encoderFactory;
+    const ALG = 'HS256';
+    private $key;
 
-    public function __construct(EncoderFactoryInterface $encoderFactory)
+    public function __construct($key)
     {
-        $this->encoderFactory = $encoderFactory;
+        $this->key = $key;
     }
-
-    public function createAuthenticatedToken(UserInterface $user, $providerKey){
-	$token = $user->getEmail().':'.$user->getPassword();
-	$data = array(
-	    $providerKey => $token
-	);
-        return new JsonResponse($data, Response::HTTP_ACCEPTED);
-    }
-
-    public function getCredentials(Request $request)
-    {
-        if (!$token = $request->headers->get('X-AUTH-TOKEN')) {
-            // No token?
-            $token = null;
-        }
-
-        // Parse the header or ignore it if the format is incorrect.
-        if (false === strpos($token, ':')) {
-            return;
-        }
-        list($email, $secret) = explode(':', $token, 2);
-
-        return array(
-            'email' => $email,
-            'secret' => $secret,
-        );
-
-        /*
-        // What you return here will be passed to getUser() as $credentials
-        return array(
-            'token' => $token,
-        );
-        */
-    }
-
-    public function getUser($credentials, UserProviderInterface $userProvider)
-    {
-        return $userProvider->loadUserByUsername($credentials['email']);
-    }
-
-    public function checkCredentials($credentials, UserInterface $user)
-    {
-        // check credentials - e.g. make sure the password is valid
-        // no credential check is needed in this case
-
-        $encoder = $this->encoderFactory->getEncoder($user);
-
-	var_dump($credentials['secret']);
-	var_dump($user->getPassword());
-	var_dump($encoder->isPasswordValid($user->getPassword(),$credentials['secret'],$user->getSalt()));
-	die();
-
-        return $encoder->isPasswordValid(
-            $user->getPassword(),
-            $credentials['secret'],
-            $user->getSalt()
-        );
-
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
-    {
-        // on success, let the request continue
-        return;
-    }
-
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-    {
-        $data = array(
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
-        );
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
-    }
-
     /**
-     * Called when authentication is needed, but it's not sent
+     * @param array $payload
+     * @param int   $ttl
+     *
+     * @return string
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function encode(array $payload, $ttl = 86400)
     {
-        $data = array(
-            // you might translate this message
-            'message' => 'Authentication Required'
-        );
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        $payload['iat'] = time();
+        $payload['exp'] = time() + $ttl;
+        $jws = new JWS([
+            'typ' => 'JWS',
+            'alg' => self::ALG,
+        ]);
+        $jws->setPayload($payload);
+        $jws->sign($this->key);
+        return $jws->getTokenString();
     }
-
-    public function supportsRememberMe()
+    /**
+     * @param string $token
+     *
+     * @return array
+     *
+     * @throws InvalidJWTException
+     */
+    public function decode($token)
     {
+        $jws = JWS::load($token);
+        if (!$jws->verify($this->key, self::ALG)) {
+            throw new InvalidJWTException('Invalid JWT');
+        }
+        if ($this->isExpired($payload = $jws->getPayload())) {
+            throw new InvalidJWTException('Expired JWT');
+        }
+        return $payload;
+    }
+    /**
+     * @param array $payload
+     *
+     * @return bool
+     */
+    private function isExpired($payload)
+    {
+        if (isset($payload['exp']) && is_numeric($payload['exp'])) {
+            return (time() - $payload['exp']) > 0;
+        }
         return false;
     }
 }

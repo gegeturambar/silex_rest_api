@@ -59,7 +59,9 @@ abstract class AbstractEntity{
         $data = array();
         foreach(static::getProperties() as $p){
             $fctionName = 'get'.ucfirst($p);
-            $data[$p] = $this->$fctionName();
+	    $value = $this->$fctionName();
+	    $value = is_array($value) ? json_encode($value) : $value;
+	    $data[$p] = $value;
         }
         return($data);
     }

@@ -2,6 +2,7 @@
 
 $app->get('/api/export','\Controller\ExportController::indexAction')->bind('api_export');
 
+
 $app->get('/api/users','\Controller\UserController::indexAction')->bind('api_users');
 
 /*
@@ -29,6 +30,9 @@ $app->delete('api/user/delete/{id}', '\Controller\UserController::deleteAction')
 
 $app->put('/api/user/update/{id}', '\Controller\UserController::updateAction')->bind('api_user_update');
 
+$app->post('/api/login','\Controller\UserController::loginAction')->bind('api_login');
+
+$app->post('/api/signup','\Controller\UserController::signupAction')->bind('api_signup');
 
 /** langues */
 
@@ -58,7 +62,7 @@ $app->put('/api/version/update/{id}','\Controller\VersionController::updateActio
 
 /** traductions */
 
-$app->get('/api/traductions','\Controller\TraductionController::indexAction')->bind('api_traductions');
+$app->get('/api/traductions/{limit}/{offset}','\Controller\TraductionController::indexAction')->bind('api_traductions')->value('limit',null)->value('offset',null);
 
 $app->get('/api/traductions/import','\Controller\TraductionController::importAction')->bind('api_traductions_import');
 

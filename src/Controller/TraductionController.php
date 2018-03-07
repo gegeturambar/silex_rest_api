@@ -19,9 +19,15 @@ use duncan3dc\Excel;
 
 class TraductionController
 {
-    public function indexAction(Application $app, Request $request)
+    public function indexAction(Application $app, Request $request,$limit=null,$offset=null)
     {
-        $traductions = $app['repository.traduction']->findAll();
+	if(!is_null($limit)){
+		$limit = (int)$limit;
+		if(!is_null($offset))
+			$offset = (int)$offset;
+	}
+
+        $traductions = $app['repository.traduction']->findAll(array(),"ASC",$limit,$offset);
         $responseData = array();
         /** @var Traduction $traduction */
         foreach($traductions as $traduction){
@@ -160,8 +166,9 @@ class TraductionController
 
     public function importAction(Application $app,Request $request)
     {
+
         // get path from settings, then read file, truncate table and import !
-        $path = __DIR__.'\\'.$app['settings']['file_location'];
+        $path = $app['settings']['file_location'];
 
         $responseData = array();
 

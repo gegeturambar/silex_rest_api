@@ -65,7 +65,7 @@ class Repository
         $this->_entityClass = $entityClass;
     }
 
-    public function findAll($orderFields = array(),$order = "ASC",$limit = null)
+    public function findAll($orderFields = array(),$order = "ASC",$limit = null,$offset = null)
     {
         $sql = "SELECT * FROM ". $this->getTableName();
         if(count($orderFields)) {
@@ -76,8 +76,11 @@ class Repository
             $sql = substr($sql,0,-2);
             $sql .= " ) $order ";
         }
-        if(!is_null($limit)){
-            $sql .= "LIMIT ".(integer)$limit;
+        if(!empty($limit) ){
+		$sql .= " LIMIT ".(integer)$limit." ";
+		if(!empty($offset)){
+			$sql .= " OFFSET ".(int)$offset." ";
+		}
         }
         $sql .= ";";
 
@@ -101,6 +104,15 @@ class Repository
         }else{
             return null;
         }
+    }
+
+    public function findOneBy($params, $and = true){
+	    $ret = $this->findBy($params,$and);
+	    if(count($ret)){
+		    $ret = array_pop($ret);
+		    return $ret;
+	    }
+	    return false;
     }
 
     public function findBy($params, $and = true)

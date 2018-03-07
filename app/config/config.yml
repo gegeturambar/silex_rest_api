@@ -1,9 +1,24 @@
 version: 1.0.0
-file_location: ..\..\..\..\Documents\ws_traduction\MSH_INTERNATIONAL_French _With_Separator.xls
+file_location: /home/jeremie/workspace/php/silex_rest_api/Documents/traductions.xls
 database:
     driver:  pdo_mysql
     charset: utf8
     host: 127.0.0.1
-    dbname: silex_api
+    dbname: traductions 
     user: root
     password: password
+
+security:
+    secret: asecretSomething
+    firewalls:
+        main:
+            anonymous: ~
+            http_basic: ~
+            guard:
+                authenticators: 
+                    - app.token_authenticator
+    access_control:
+        - { roles: ROLE_ADMIN, methods: [POST, PUT, DELETE] }
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+
