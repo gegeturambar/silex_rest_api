@@ -25,8 +25,8 @@ class UserController
         foreach($users as $user){
             $responseData[] = array(
                 'id'    =>  $user->getId(),
-                'firstname' =>  $user->getFirstname(),
-                'lastname' =>  $user->getLastname()
+                'email' =>  $user->getEmail(),
+                'password' =>  $user->getPassword()
             );
         }
 
@@ -75,8 +75,7 @@ class UserController
 
         $responseData = array(
             'id'    =>  $user->getId(),
-            'firstname' =>  $user->getFirstname(),
-            'lastname'  =>  $user->getLastname()
+            'email' =>  $user->getEmail()
         );
         return $app->json($responseData);
     }

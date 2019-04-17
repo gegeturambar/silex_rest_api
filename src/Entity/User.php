@@ -12,18 +12,6 @@ class User extends AbstractEntity implements UserInterface
      */
     private $id;
 
-    /**
-     * @var string
-     */
-    private $firstname;
-
-    /**
-     * @var string
-     */
-    private $lastname;
-
-    private $username;
-
     private $salt;
 
     private $roles = array('ROLE_USER');
@@ -48,14 +36,6 @@ class User extends AbstractEntity implements UserInterface
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    /**
-     * @param mixed $username
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
     }
 
     /**
@@ -85,46 +65,13 @@ class User extends AbstractEntity implements UserInterface
         $this->email = $email;
     }
 
-    /**
-     * @return string
-     */
-    public function getFirstname()
-    {
-        return $this->firstname;
-    }
-
-    /**
-     * @param string $firstname
-     */
-    public function setFirstname($firstname)
-    {
-        $this->firstname = $firstname;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastname()
-    {
-        return $this->lastname;
-    }
-
-    /**
-     * @param string $lastname
-     */
-    public function setLastname($lastname)
-    {
-        $this->lastname = $lastname;
-    }
-
     protected static $_tablename = "user";
 
     protected static $_properties = null;
 
     public function getUsername()
     {
-        return $this->username;
-        // TODO: Implement getUsername() method.
+        return $this->email;
     }
 
     public function getSalt()
